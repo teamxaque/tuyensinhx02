@@ -1,13 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OpenAI Agent Chat</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    <title>Agent Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+        }
+
+        #chat {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .msg {
+            margin-bottom: 10px;
+        }
+
+        .user {
+            color: #38bdf8;
+        }
+
+        .agent {
+            color: #a7f3d0;
+        }
+
+        .tool {
+            color: #facc15;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="chat"></div>
+    <input id="input" placeholder="Nhập câu hỏi..." style="width:80%" />
+    <button onclick="send()">Gửi</button>
+
+    <script>
+        let sessionId = null;
+
+        function append(role, text) {
+            const div = document.createElement("div");
+            div.className = "msg " + role;
+            div.innerHTML = marked.parse(text);
+            document.getElementById("chat").appendChild(div);
+        }
+
+        function send() {
+            const text = input.value;
+            append("user", text);
+            input.value = "";
+
+            const evtSource = new EventSourcePolyfill("/chat/stream", {
+                headers: { "Content-Type": "application/json" },
+                payload: JSON.stringify({
+                    message: text,
+                    session_id: sessionId
+                }),
+            });
+
+            let buffer = "";
+
+            evtSource.onmessage = (e) => {
+                buffer += e.data;
+                append("agent", buffer);
+            };
+
+            evtSource.addEventListener("tool", e => {
+                append("tool", e.data);
+            });
+
+            evtSource.addEventListener("session", e => {
+                sessionId = e.data;
+            });
+
+            evtSource.addEventListener("end", () => {
+                evtSource.close();
+            });
+        }
+    </script>
+</body>
+
 </html>
