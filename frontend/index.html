@@ -57,8 +57,8 @@
             const text = input.value;
             append("user", text);
             input.value = "";
-
-            const evtSource = new EventSourcePolyfill("/chat/stream", {
+            const BACKEND_URL = "https://agent-backend-production.up.railway.app";
+            const evtSource = new EventSourcePolyfill(`${BACKEND_URL}/chat/stream`, {
                 headers: { "Content-Type": "application/json" },
                 payload: JSON.stringify({
                     message: text,
