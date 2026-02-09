@@ -1,0 +1,51 @@
+.tool-call-indicator {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+}
+
+.tool-call-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--accent-primary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.tool-icon {
+    color: var(--accent-primary);
+}
+
+.tool-name {
+    flex: 1;
+}
+
+.tool-arguments,
+.tool-result {
+    margin-top: var(--spacing-md);
+}
+
+.args-label,
+.result-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.args-content,
+.result-content {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    overflow-x: auto;
+    margin: 0;
+}
+
+.result-content {
+    border-left: 3px solid var(--accent-primary);
+}
