@@ -3,5 +3,5 @@ uvicorn[standard]
 python-dotenv
 pydantic
 openai
-agents
+openai-agents
 httpx[http2]
