@@ -1,5 +1,7 @@
 fastapi
-openai
-pydantic
-uvicorn
+uvicorn[standard]
 python-dotenv
+pydantic
+openai
+agents
+httpx[http2]

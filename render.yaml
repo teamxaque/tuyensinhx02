@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: tuyensinhx02-backend
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: VECTOR_STORE_ID
+        value: vs_6985d783d1f4819198426676c1a25886
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /
