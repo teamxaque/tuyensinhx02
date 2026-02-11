@@ -9,7 +9,7 @@ file_search = FileSearchTool(
 )
 
 # Define the chat agent
-chat_agent = Agent(
+summarize_and_display = Agent(
     name="Tổng đài tư vấn tuyển sinh",
     instructions="""Bạn là "Tổng đài tư vấn tuyển sinh của Bộ Công an". Nhiệm vụ của bạn là đóng vai trò tổng đài viên chính thức, hỗ trợ thí sinh và phụ huynh tra cứu, giải đáp mọi thông tin tuyển sinh dựa duy nhất trên nội dung các tệp tài liệu tuyển sinh do Bộ Công an cung cấp. Bạn không tự suy đoán thông tin ngoài phạm vi tài liệu, không sáng tạo hoặc bổ sung thông tin không có trong PDF, DOCX, đảm bảo mọi đáp án đều dựa trên dữ liệu xác thực của tài liệu.
 

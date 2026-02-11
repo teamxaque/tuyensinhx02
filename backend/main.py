@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from agent.agent import chat_agent
+from agent.agent import summarize_and_display
 from agent.session import SessionStore
 from agents import Runner
 
@@ -61,25 +61,48 @@ async def chat_stream(request: Request):
 
                 # Run agent with streaming
                 result = Runner.run_streamed(
-                    chat_agent,
+                    summarize_and_display,
                     input=conversation_history,
                 )
 
                 assistant_response = ""
 
                 async for event in result.stream_events():
-                    if event.type == "response.output_text.delta":
-                        assistant_response += event.delta
-                        yield f"data: {event.delta}\n\n"
+                    # Debug: See what events are coming through in the backend console
+                    print(f"DEBUG: Event type: {event.type}")
+                    
+                    # Handle high-level events if available
+                    if event.type == "agent.response.text.delta":
+                        assistant_response += event.text
+                        yield f"data: {event.text}\n\n"
 
-                    elif event.type == "tool.call.started":
+                    # Handle raw events (common in 0.8.1)
+                    elif event.type == "raw_response_event":
+                        data = event.data
+                        data_type = type(data).__name__
+                        
+                        if data_type == "ResponseTextDeltaEvent":
+                            assistant_response += data.delta
+                            yield f"data: {data.delta}\n\n"
+                        
+                        elif data_type == "ResponseFunctionCallArgumentsDeltaEvent":
+                            # Signal tool usage to frontend (yield once per call is handled by frontend state)
+                            yield f"event: tool\ndata: 🔧 Đang tra cứu tài liệu...\n\n"
+                        
+                        elif data_type == "ResponseCompletedEvent":
+                            # End of response
+                            session_store.append(session_id, "user", user_message)
+                            session_store.append(session_id, "assistant", assistant_response)
+                            yield f"event: end\ndata: [DONE]\n\n"
+
+                    elif event.type == "agent.tool_call.started":
                         yield f"event: tool\ndata: 🔧 Đang tra cứu tài liệu...\n\n"
 
-                    elif event.type == "response.completed":
-                        # Save to session
+                    elif event.type == "agent.response.done":
                         session_store.append(session_id, "user", user_message)
                         session_store.append(session_id, "assistant", assistant_response)
                         yield f"event: end\ndata: [DONE]\n\n"
+
 
             except Exception as e:
                 yield f"event: error\ndata: Lỗi: {str(e)}\n\n"

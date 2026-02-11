@@ -5,42 +5,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tư vấn tuyển sinh - Bộ Công an</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Markdown and Syntax Highlighting -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/event-source-polyfill@1.0.31/src/eventsource.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
     <style>
+        :root {
+            --primary: #38bdf8;
+            --primary-dark: #0ea5e9;
+            --bg-dark: #0f172a;
+            --bg-accent: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass: rgba(15, 23, 42, 0.75);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
         }
 
         .header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            border-bottom: 2px solid #38bdf8;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
         }
 
-        .header h1 {
-            font-size: 1.5rem;
-            color: #38bdf8;
-            font-weight: 600;
+        .header-content h1 {
+            font-size: 1.25rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
         }
 
-        .header p {
-            font-size: 0.875rem;
-            color: #94a3b8;
-            margin-top: 0.25rem;
+        .header-content p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.2rem;
         }
 
         #chat-container {
@@ -49,20 +88,21 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
+            scroll-behavior: smooth;
         }
 
-        .msg {
-            max-width: 80%;
-            padding: 1rem;
-            border-radius: 12px;
-            animation: fadeIn 0.3s ease-in;
+        .msg-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes fadeIn {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
 
             to {
@@ -71,158 +111,351 @@
             }
         }
 
-        .msg.user {
+        .msg-wrapper.user {
             align-self: flex-end;
+        }
+
+        .msg-wrapper.agent {
+            align-self: flex-start;
+        }
+
+        .msg-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            padding: 0 0.5rem;
+        }
+
+        .msg-wrapper.user .msg-label {
+            text-align: right;
+        }
+
+        .msg {
+            padding: 1rem 1.25rem;
+            border-radius: 1.25rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .msg.user {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+            border-bottom-right-radius: 0.25rem;
         }
 
         .msg.agent {
-            align-self: flex-start;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid #334155;
-            color: #e5e7eb;
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        /* Markdown Structural Fixes */
+        .msg p {
+            margin-bottom: 0.75rem;
+        }
+
+        .msg p:last-child {
+            margin-bottom: 0;
+        }
+
+        .msg ul,
+        .msg ol {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+            display: block;
+            /* Ensure it's not inline */
+        }
+
+        .msg li {
+            margin-bottom: 0.4rem;
+            display: list-item;
+        }
+
+        .msg table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            display: table;
         }
 
         .msg.tool {
             align-self: center;
-            background: rgba(250, 204, 21, 0.1);
-            border: 1px solid #facc15;
-            color: #facc15;
-            font-style: italic;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px dashed var(--primary);
+            color: var(--primary);
+            font-size: 0.8rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .msg.error {
             align-self: center;
             background: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
-            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            font-size: 0.85rem;
+        }
+
+        /* Markdown Styling */
+        .msg blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: 1rem;
+            margin: 0.5rem 0;
+            color: var(--text-muted);
+        }
+
+        .msg ul,
+        .msg ol {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .msg li {
+            margin-bottom: 0.4rem;
+        }
+
+        .msg table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .msg th,
+        .msg td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .msg th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+        }
+
+        .msg pre {
+            background: #000 !important;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .msg code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+        }
+
+        .msg pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Input Area */
+        .input-outer {
+            padding: 1.5rem 2rem 2.5rem;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
         }
 
         .input-container {
-            padding: 1.5rem 2rem;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            border-top: 2px solid #334155;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            padding: 0.6rem;
+            border-radius: 1.5rem;
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
         }
 
         #input {
             flex: 1;
-            padding: 0.875rem 1.25rem;
-            border: 2px solid #334155;
-            border-radius: 8px;
-            background: #1e293b;
-            color: #e5e7eb;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: white;
             font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        #input:focus {
             outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
         }
 
         #send-btn {
-            padding: 0.875rem 2rem;
-            background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
-            color: white;
+            background: var(--primary);
+            color: var(--bg-dark);
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 0 1.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(56, 189, 248, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        #send-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(56, 189, 248, 0.4);
+        #send-btn:hover {
+            background: #7dd3fc;
+            transform: scale(1.02);
+        }
+
+        #send-btn:active {
+            transform: scale(0.98);
         }
 
         #send-btn:disabled {
-            opacity: 0.5;
+            background: #334155;
+            color: #64748b;
             cursor: not-allowed;
         }
 
-        .loading {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #38bdf8;
-            animation: pulse 1.5s ease-in-out infinite;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
 
-        @keyframes pulse {
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 0.5rem;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
 
             0%,
+            80%,
             100% {
-                opacity: 1;
+                transform: scale(0);
             }
 
-            50% {
-                opacity: 0.3;
+            40% {
+                transform: scale(1);
             }
-        }
-
-        /* Scrollbar styling */
-        #chat-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #chat-container::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-
-        #chat-container::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-
-        #chat-container::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
         }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <h1>🎓 Tổng đài tư vấn tuyển sinh - Bộ Công an</h1>
-        <p>Hỗ trợ thông tin tuyển sinh năm 2026</p>
+        <div class="header-content">
+            <h1>🎓 TuyenSinhX02</h1>
+            <p>Phòng Tư vấn Tuyển sinh Bộ Công an</p>
+        </div>
+        <div id="status-badge"
+            style="font-size: 0.65rem; background: rgba(34, 197, 94, 0.1); color: #4ade80; padding: 0.4rem 0.8rem; border-radius: 2rem; border: 1px solid rgba(34, 197, 94, 0.2);">
+            Online
+        </div>
     </div>
 
     <div id="chat-container"></div>
 
-    <div class="input-container">
-        <input id="input" placeholder="Nhập câu hỏi của bạn..." />
-        <button id="send-btn" onclick="send()">Gửi</button>
+    <div class="input-outer">
+        <div class="input-container">
+            <input id="input" autocomplete="off" placeholder="Hỏi bất cứ điều gì về tuyển sinh 2026..." />
+            <button id="send-btn" onclick="send()">
+                <span>Gửi</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <script>
+        // Configure Marked
+        marked.setOptions({
+            highlight: function (code, lang) {
+                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                return hljs.highlight(code, { language }).value;
+            },
+            langPrefix: 'hljs language-',
+            gfm: true,
+            breaks: true
+        });
+
         let sessionId = null;
         let isProcessing = false;
         let currentMessageDiv = null;
+        let assistantMessageBuffer = "";
 
-        // Configuration - can be overridden by embedding page
-        const BACKEND_URL = window.BACKEND_URL || "https://tuyensinhx02.onrender.com";
-
+        const BACKEND_URL = window.BACKEND_URL || "https://tuyensinhx02.onrender.com"; // Default to production, override for local
         const chatContainer = document.getElementById("chat-container");
         const input = document.getElementById("input");
         const sendBtn = document.getElementById("send-btn");
 
         function appendMessage(role, text, isNew = true) {
-            if (isNew || !currentMessageDiv) {
+            if (isNew || !currentMessageDiv || currentMessageDiv.dataset.role !== role) {
+                const wrapper = document.createElement("div");
+                wrapper.className = `msg-wrapper ${role}`;
+
+                const label = document.createElement("div");
+                label.className = "msg-label";
+                label.textContent = role === "user" ? "BẠN" : "TRỢ LÝ";
+
                 const div = document.createElement("div");
                 div.className = "msg " + role;
-                div.innerHTML = marked.parse(text);
-                chatContainer.appendChild(div);
+                div.dataset.role = role;
+
+                if (role === "agent") {
+                    div.innerHTML = marked.parse(text);
+                } else {
+                    div.textContent = text;
+                }
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(div);
+                chatContainer.appendChild(wrapper);
                 currentMessageDiv = div;
             } else {
                 currentMessageDiv.innerHTML = marked.parse(text);
@@ -230,8 +463,21 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
+        function showToolIndicator(text) {
+            const div = document.createElement("div");
+            div.className = "msg tool";
+            div.innerHTML = `<span class="loading-mini"></span> ${text}`;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return div;
+        }
+
         function showError(message) {
-            appendMessage("error", "❌ " + message, true);
+            const div = document.createElement("div");
+            div.className = "msg error";
+            div.textContent = "❌ " + message;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
             isProcessing = false;
             updateUIState();
         }
@@ -239,7 +485,6 @@
         function updateUIState() {
             sendBtn.disabled = isProcessing;
             input.disabled = isProcessing;
-            sendBtn.textContent = isProcessing ? "Đang xử lý..." : "Gửi";
         }
 
         async function send() {
@@ -251,85 +496,73 @@
             isProcessing = true;
             updateUIState();
 
+            assistantMessageBuffer = "";
+            currentMessageDiv = null;
+
             try {
                 const response = await fetch(`${BACKEND_URL}/chat/stream`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        message: text,
-                        session_id: sessionId
-                    }),
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text, session_id: sessionId }),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let buffer = "";
-                let assistantMessage = "";
 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
 
                     buffer += decoder.decode(value, { stream: true });
-                    const lines = buffer.split("\n");
-                    buffer = lines.pop() || "";
+                    let parts = buffer.split("\n\n");
+                    buffer = parts.pop() || "";
 
-                    for (const line of lines) {
-                        if (!line.trim()) continue;
+                    for (const part of parts) {
+                        if (!part.trim()) continue;
+                        let lines = part.split("\n");
+                        let eventType = "message";
+                        let eventData = "";
 
-                        if (line.startsWith("event: session")) {
-                            const nextLine = lines[lines.indexOf(line) + 1];
-                            if (nextLine && nextLine.startsWith("data: ")) {
-                                sessionId = nextLine.substring(6).trim();
-                            }
-                        } else if (line.startsWith("event: tool")) {
-                            const nextLine = lines[lines.indexOf(line) + 1];
-                            if (nextLine && nextLine.startsWith("data: ")) {
-                                appendMessage("tool", nextLine.substring(6), true);
-                            }
-                        } else if (line.startsWith("event: error")) {
-                            const nextLine = lines[lines.indexOf(line) + 1];
-                            if (nextLine && nextLine.startsWith("data: ")) {
-                                showError(nextLine.substring(6));
-                            }
-                        } else if (line.startsWith("event: end")) {
+                        for (const line of lines) {
+                            if (line.startsWith("event: ")) eventType = line.substring(7).trim();
+                            else if (line.startsWith("data: ")) eventData += line.substring(6);
+                        }
+
+                        if (eventType === "session") {
+                            sessionId = eventData.trim();
+                        } else if (eventType === "tool") {
+                            showToolIndicator(eventData);
                             currentMessageDiv = null;
-                        } else if (line.startsWith("data: ")) {
-                            const data = line.substring(6);
-                            if (data !== "[DONE]") {
-                                assistantMessage += data;
-                                appendMessage("agent", assistantMessage, false);
+                        } else if (eventType === "error") {
+                            showError(eventData);
+                        } else if (eventType === "end") {
+                            currentMessageDiv = null;
+                        } else if (eventType === "message") {
+                            if (eventData !== "[DONE]") {
+                                assistantMessageBuffer += eventData;
+                                appendMessage("agent", assistantMessageBuffer, false);
                             }
                         }
                     }
                 }
-
             } catch (error) {
                 console.error("Error:", error);
                 showError("Không thể kết nối đến server. Vui lòng thử lại sau.");
             } finally {
                 isProcessing = false;
                 updateUIState();
-                currentMessageDiv = null;
             }
         }
 
-        // Allow Enter key to send message
         input.addEventListener("keypress", (e) => {
-            if (e.key === "Enter" && !isProcessing) {
-                send();
-            }
+            if (e.key === "Enter" && !isProcessing) send();
         });
 
-        // Initial greeting
         window.addEventListener("load", () => {
-            appendMessage("agent", "Xin chào! Mình là trợ lý tư vấn tuyển sinh của Bộ Công an. Bạn có thắc mắc gì về tuyển sinh năm 2026 không?", true);
+            appendMessage("agent", "Chào bạn! Mình là trợ lý tư vấn tuyển sinh của Bộ Công an. Bạn cần hỗ trợ thông tin gì về kỳ tuyển sinh năm 2026?", true);
         });
     </script>
 </body>
