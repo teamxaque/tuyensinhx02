@@ -24,6 +24,10 @@ app.add_middleware(
 
 session_store = SessionStore()
 
+def sse_data(text: str) -> str:
+    """Encode text for SSE data field: escape newlines so they don't break the protocol."""
+    return text.replace("\n", "\\n")
+
 @app.get("/")
 async def root():
     return {"status": "ok", "message": "TuyenSinhX02 Agent API"}
@@ -74,7 +78,7 @@ async def chat_stream(request: Request):
                     # Handle high-level events if available
                     if event.type == "agent.response.text.delta":
                         assistant_response += event.text
-                        yield f"data: {event.text}\n\n"
+                        yield f"data: {sse_data(event.text)}\n\n"
 
                     # Handle raw events (common in 0.8.1)
                     elif event.type == "raw_response_event":
@@ -83,7 +87,7 @@ async def chat_stream(request: Request):
                         
                         if data_type == "ResponseTextDeltaEvent":
                             assistant_response += data.delta
-                            yield f"data: {data.delta}\n\n"
+                            yield f"data: {sse_data(data.delta)}\n\n"
                         
                         elif data_type == "ResponseFunctionCallArgumentsDeltaEvent":
                             # Signal tool usage to frontend (yield once per call is handled by frontend state)
