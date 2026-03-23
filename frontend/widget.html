@@ -357,7 +357,7 @@
 <body>
     <div class="header">
         <div>
-            <h1>🔵 Tư vấn Tuyển sinh VB2 tuyển mới</h1>
+            <h1>🔵 Tư vấn Tuyển sinh Văn bằng 2 tuyển mới</h1>
             <p>Bộ Công an • Hỗ trợ 24/7 • Thử nghiệm</p>
             <div class="data-btn" onclick="toggleModal('infoModal')"><i class="fas fa-database"></i></div>
         </div>
@@ -879,21 +879,21 @@
                     buffer = parts.pop();
 
                     for (const part of parts) {
-                        if (!part.startsWith("data: ")) continue;
+                        if (!part.trim()) continue;
 
                         let eventType = "message";
+                        let eventData = "";
                         let lines = part.split("\n");
                         for (let line of lines) {
                             if (line.startsWith("event: ")) eventType = line.substring(7).trim();
+                            else if (line.startsWith("data: ")) eventData += line.substring(6);
                         }
 
-                        let data = part.substring(part.indexOf("data: ") + 6);
-
                         if (eventType === "session") {
-                            sessionId = data.trim();
+                            sessionId = eventData.trim();
                         } else if (eventType === "message") {
-                            if (data !== "[DONE]") {
-                                assistantMessageBuffer += data;
+                            if (eventData !== "[DONE]") {
+                                assistantMessageBuffer += eventData.replace(/\\n/g, "\n");
                                 appendMessage("agent", assistantMessageBuffer, false);
                             }
                         } else if (eventType === "end") {
