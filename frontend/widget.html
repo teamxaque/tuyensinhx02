@@ -9,17 +9,23 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Markdown and Syntax Highlighting -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --police-red: #ba0c2f;
+            --police-gold: #fdf1de;
+            --police-dark: #111827;
+            --bg-tech: #f0f2f5;
+            --primary: #ba0c2f;
+            --primary-hover: #ba0c2f;
             --bg-page: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #1e293b;
@@ -37,7 +43,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Lexend', sans-serif;
             background-color: var(--bg-page);
             color: var(--text-main);
             height: 100vh;
@@ -47,7 +53,7 @@
         }
 
         .header {
-            background: var(--bg-card);
+            background: var(--police-gold);
             padding: 1rem 1.25rem;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -261,14 +267,99 @@
             background: #cbd5e1;
             border-radius: 10px;
         }
+
+        /* --- MODAL --- */
+
+        .data-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--police-red);
+            font-size: 18px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 218, 68, 0.3);
+            transition: all 0.2s;
+            animation: pulse-gold 2s infinite;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            height: 90%;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(255, 218, 68, 0.2);
+            border: 1px solid var(--police-gold);
+        }
+
+        .modal-header {
+            background: var(--police-red);
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--police-gold);
+        }
+
+        .tab-bar {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px 5px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--police-red);
+            border-bottom-color: var(--police-red);
+            background: #fef2f2;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <div class="header">
         <div>
-            <h1>🔵 Tư vấn Tuyển sinh</h1>
+            <h1>🔵 Tư vấn Tuyển sinh Văn bằng 2 tuyển mới</h1>
             <p>Bộ Công an • Hỗ trợ 24/7 • Thử nghiệm</p>
+            <div class="data-btn" onclick="toggleModal('infoModal')"><i class="fas fa-database"></i></div>
         </div>
     </div>
 
@@ -284,7 +375,430 @@
             </svg>
         </button>
     </div>
+    <!-- MODAL TRUNG TÂM DỮ LIỆU -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 class="font-bold uppercase text-sm tracking-wider text-white">DỮ LIỆU GỐC X02</h3>
+                    <p class="text-[10px] text-yellow-300 font-bold uppercase mt-1">Cập nhật: 23/03/2026</p>
+                </div>
+                <button onclick="toggleModal('infoModal')"
+                    class="text-2xl text-white hover:text-yellow-300">&times;</button>
+            </div>
 
+            <div class="tab-bar">
+                <div class="tab-btn active" onclick="switchTab(this, 'tab-danhba')">LIÊN HỆ</div>
+                <div class="tab-btn" onclick="switchTab(this, 'tab-suckhoe')">SỨC KHỎE - THỂ LỰC</div>
+                <div class="tab-btn" onclick="switchTab(this, 'tab-dieukien')">TUYỂN SINH 2026</div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-4 no-scrollbar">
+
+                <!-- Tab Danh Bạ (Tích hợp Full Excel) -->
+                <div id="tab-danhba" class="tab-content">
+                    <div class="p-3 bg-white border border-red-200 rounded-lg mb-3 text-center shadow-sm">
+                        <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Cán bộ chủ trì</p>
+                        <p class="font-black text-gray-900 text-base mt-1">Thiếu tá Nguyễn Văn Tuấn</p>
+                        <p class="text-red-600 font-black text-lg mt-1 select-all">0977.xxx.xxx</p>
+                    </div>
+                    <div class="relative mb-3">
+                        <input type="text" id="searchContact" oninput="filterContact()"
+                            placeholder="Tìm cán bộ phụ trách tuyển sinh theo từng địa bàn"
+                            class="w-full p-2 pl-9 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-red-500 font-semibold text-gray-700">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+                    </div>
+                    <div id="list-danhba" class="space-y-2"></div>
+                </div>
+
+                <!-- Tab Sức khỏe (Tích hợp TT62 + TT131) -->
+                <div id="tab-suckhoe" class="tab-content hidden">
+                    <h4 class="text-[10px] font-black text-red-700 mb-2 uppercase border-l-4 border-red-700 pl-2">TIÊU
+                        CHUẨN LÂM SÀNG & CẬN LÂM SÀNG</h4>
+                    <p class="text-xs text-gray-700 mt-1 leading-relaxed font-bold">Tham khảo: <a
+                            href="https://thuvienphapluat.vn/van-ban/the-thao/thong-tu-131-tt-bca-2025-tieu-chuan-suc-khoe-tuyen-sinh-cong-an-622186.aspx"
+                            target="_blank" style="color:var(--police-red); text-decoration: underline;">Thông tư
+                            131/TT-BCA ngày 25/12/2025</a> và <a
+                            href="https://thuvienphapluat.vn/van-ban/the-thao/thong-tu-62-tt-bca-2023-tieu-chuan-suc-khoe-tuyen-sinh-cong-an-562953.aspx"
+                            target="_blank" style="color:var(--police-red); text-decoration: underline;">Thông
+                            tư 62/2023/TT-BCA ngày 14/11/2023</a></p>
+                    <div id="list-suckhoe" class="space-y-2"></div>
+                </div>
+
+                <!-- Tab Điều kiện (Tích hợp Văn bản mới) -->
+                <div id="tab-dieukien" class="tab-content hidden">
+                    <h4 class="text-[10px] font-black text-red-700 mb-2 uppercase border-l-4 border-red-700 pl-2">ĐỐI
+                        TƯỢNG & NGUYÊN TẮC XÉT TUYỂN</h4>
+                    <div id="list-dieukien" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /****************************************************************
+         * 1. CƠ SỞ DỮ LIỆU ĐẦY ĐỦ 
+         ****************************************************************/
+        const DANH_BA_DATA = [
+            { unit: "Cục Đào tạo", name: "Triệu Thành Đạt", phone: "093.602.7886" },
+            { unit: "HÀ NỘI", name: "Trịnh Hải Đăng", phone: "098.268.2668" },
+            { unit: "TP. HỒ CHÍ MINH", name: "Phạm Chí Tâm", phone: "0363.019.371" },
+            { unit: "HẢI PHÒNG", name: "Nguyễn Thanh Tùng", phone: "0984.365.330" },
+            { unit: "ĐÀ NẴNG", name: "Phạm Đình Nga", phone: "090.577.1287" },
+            { unit: "CẦN THƠ", name: "Phạm Lê Thế Duy", phone: "0939.664.929" },
+            { unit: "HUẾ", name: "Nguyễn Ngọc Tài", phone: "093.479.8135" },
+            { unit: "CAO BẰNG", name: "Nguyễn Thị Kiều Trang", phone: "098.855.7117" },
+            { unit: "LAI CHÂU", name: "Hoàng Ngọc Thảo", phone: "096.927.6678" },
+            { unit: "LÀO CAI", name: "Phan Ngọc Lý", phone: "088.688.5283" },
+            { unit: "TUYÊN QUANG", name: "Hoàng Thảo Linh", phone: "094.893.6789" },
+            { unit: "LẠNG SƠN", name: "Nguyễn Hữu Tú", phone: "097.829.4664" },
+            { unit: "THÁI NGUYÊN", name: "Nguyễn Anh Tú", phone: "091.236.9629" },
+            { unit: "SƠN LA", name: "", phone: "" },
+            { unit: "ĐIỆN BIÊN", name: "Lê Văn Hưng", phone: "093.222.6399" },
+            { unit: "PHÚ THỌ", name: "", phone: "" },
+            { unit: "QUẢNG NINH", name: "Đỗ Việt Dũng", phone: "077.828.3888" },
+            { unit: "BẮC NINH", name: "Bùi Văn Thời", phone: "094.764.2616" },
+            { unit: "HƯNG YÊN", name: "Phạm Đinh Thành", phone: "0966.799.693" },
+            { unit: "NINH BÌNH", name: "Lê Thị Thu Thảo", phone: "091.129.1988" },
+            { unit: "THANH HÓA", name: "Lê Việt Hùng", phone: "0904.676767" },
+            { unit: "NGHỆ AN", name: "Nguyễn Quốc Hưng", phone: "094.236.0172" },
+            { unit: "HÀ TĨNH", name: "Nguyễn Thị Huyền", phone: "098.834.8272" },
+            { unit: "QUẢNG TRỊ", name: "Lê Hoàng Trung", phone: "082.337.3373" },
+            { unit: "QUẢNG NGÃI", name: "Nguyễn Thị Hoàng Tâm", phone: "037.618.9999" },
+            { unit: "GIA LAI", name: "Hoàng Phương Nam", phone: "096.758.8879" },
+            { unit: "ĐẮK LẮK", name: "Nguyễn Đình Phúc", phone: "090.522.6322" },
+            { unit: "ĐOÀN THỦY THANH TÂM", name: "Đoàn Thủy Thanh Tâm", phone: "094.247.9699" },
+            { unit: "KHÁNH HÒA", name: "Nguyễn Xuân Viết", phone: "0333.900.004" },
+            { unit: "LÂM ĐỒNG", name: "Phan Thành Đạt", phone: "098.522.4235" },
+            { unit: "ĐÀO XUÂN TÂN", name: "Đào Xuân Tân", phone: "094.609.5060" },
+            { unit: "ĐỒNG NAI", name: "Trịnh Ngọc Tùng Lâm", phone: "079.875.1733" },
+            { unit: "ĐỒNG THÁP", name: "Lê Thanh Bình", phone: "0908.41.99.47" },
+            { unit: "TÂY NINH", name: "Nguyễn Bảo Trung", phone: "097.845.3637" },
+            { unit: "AN GIANG", name: "Lương Hòa Hợp", phone: "033.459.9223" },
+            { unit: "VĨNH LONG", name: "Trần Thanh Tuấn", phone: "097.414.5767" },
+            { unit: "CÀ MAU", name: "Lâm Minh Thân", phone: "091.906.1207" },
+            { unit: "Bộ Tư lệnh Cảnh vệ PHÍA BẮC", name: "Nguyễn Thị Ái Vân", phone: "096.609.7669" },
+            { unit: "Bộ Tư lệnh Cảnh vệ PHÍA NAM", name: "Phạm Thu Thủy", phone: "0888.626.497" },
+            { unit: "Cục An ninh điều tra PHÍA BẮC", name: "Đào Hiền Anh", phone: "0368.322.939" },
+            { unit: "Cục An ninh điều tra PHÍA NAM", name: "Phạm Văn Quang", phone: "090.309.7669" },
+            { unit: "Văn phòng Cơ quan Cảnh sát điểu tra PHÍA BẮC", name: "Vũ Thị Xuân", phone: "098.809.7616" },
+            { unit: "Văn phòng Cơ quan Cảnh sát điểu tra PHÍA NAM", name: "Nguyễn Hoàng Nam", phone: "078.976.3196" },
+            { unit: "Bộ Tư lệnh Cảnh sát Cơ động PHÍA BẮC", name: "Bùi Minh Thắng", phone: "098.271.2263" },
+            { unit: "Bộ Tư lệnh Cảnh sát Cơ động PHÍA NAM", name: "Nguyễn Anh Thái", phone: "098.883.5731" },
+            { unit: "Trường Văn hóa", name: "Nguyễn Việt Bắc", phone: "091.888.8672" },
+            { unit: "Học viện An ninh nhân dân", name: "Hùng", phone: "0973753797" },
+            { unit: "Học viện Cảnh sát nhân dân", name: "Huy", phone: "0906111299" },
+            { unit: "Trường Đại học An ninh nhân dân", name: "Thành", phone: "0975955717" },
+            { unit: "Trường Đại học Cảnh sát nhân dân", name: "Long", phone: "0982178278" },
+            { unit: "Trường Đại học Phòng cháy chữa cháy", name: "Nguyên", phone: "0904669114" },
+            { unit: "Học viện Kỹ thuật và Công nghệ an ninh", name: "Thắng", phone: "0945638468" }
+
+        ];
+
+        // DỮ LIỆU SỨC KHỎE (CẬP NHẬT: TT62/2023 + TT131/2025) – ĐÃ LỌC CHỈ GIỮ PHẦN ĐIỀU KIỆN/ TIÊU CHUẨN SỨC KHỎE
+        const SUC_KHOE_DATA = [
+            {
+                title: "KẾT LUẬN NHANH: ĐỦ / KHÔNG ĐỦ ĐIỀU KIỆN SỨC KHỎE",
+                content: `
+      • Nguyên tắc chung: phải đạt <b>SỨC KHỎE LOẠI 1 hoặc LOẠI 2</b> và đáp ứng tiêu chuẩn đặc thù (chiều cao, BMI, thị lực, ngoại hình, xét nghiệm).<br>
+      • Thường <b>KHÔNG ĐẠT</b> khi: BMI <b>&lt; 18,5</b> hoặc <b>&gt; 30</b>; thị lực/tật khúc xạ vượt ngưỡng; mù màu trục xanh-đỏ; có hình xăm/lỗ bấm không đúng; dương tính ma túy/tiền chất.<br>
+      <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-[10px] leading-relaxed">
+        <b>Lưu ý:</b> Kết luận cuối cùng do Hội đồng khám/sơ tuyển. Nội dung này giúp thí sinh & phụ huynh tự kiểm tra trước khi đi khám.
+      </div>
+    `
+            },
+            {
+                title: "PHÂN LOẠI SỨC KHỎE (ĐIỂM 1–6) – VÌ SAO DỄ RƠI LOẠI 3",
+                content: `
+      • Mỗi chỉ tiêu sức khỏe chấm điểm chẵn từ <b>1 đến 6</b> (1: rất tốt … 6: rất kém).<br>
+      • Phân loại theo “điểm xấu nhất”:<br>
+      &nbsp;&nbsp;– <b>Loại 1</b>: tất cả điểm 1<br>
+      &nbsp;&nbsp;– <b>Loại 2</b>: có ít nhất 1 chỉ tiêu điểm 2<br>
+      &nbsp;&nbsp;– <b>Loại 3</b>: có ít nhất 1 chỉ tiêu điểm 3 (thường là không đủ điều kiện nếu chỉ tuyển Loại 1–2)<br>
+      • Một số nội dung có quy định “không tính điểm khi phân loại” theo danh mục chấp nhận (Phụ lục X), tuy nhiên vẫn phải đối chiếu điều kiện áp dụng cụ thể.
+    `
+            },
+            {
+                title: "THỂ LỰC: CHIỀU CAO (CHUẨN CHUNG + NHÓM ƯU TIÊN)",
+                content: `
+      <b>Chuẩn chung (thường áp dụng):</b><br>
+      • Nam: <b>1m64–1m95</b> &nbsp;&nbsp;• Nữ: <b>1m58–1m80</b><br><br>
+      <b>Nhóm ưu tiên chiều cao:</b><br>
+      • <b>Dân tộc thiểu số:</b> Nam <b>≥1m62</b>, Nữ <b>≥1m56</b><br>
+      • <b>UT1:</b> Nam <b>≥1m60</b>, Nữ <b>≥1m55</b><br>
+      • <b>Dân tộc thiểu số rất ít người:</b> Nam <b>≥1m58</b>, Nữ <b>≥1m52</b><br>
+      <div class="mt-2 text-[10px] text-gray-600">
+        Gợi ý: Nếu thuộc nhóm ưu tiên, nên chuẩn bị giấy tờ chứng minh đối tượng khi sơ tuyển.
+      </div>
+    `
+            },
+            {
+                title: "BMI (BẮT BUỘC) – CÁCH TÍNH & NGƯỠNG BỊ LOẠI",
+                content: `
+      • Yêu cầu: <b>18,5 ≤ BMI ≤ 30</b>.<br>
+      • <b>Không đạt</b> nếu <b>BMI &lt; 18,5</b> hoặc <b>BMI &gt; 30</b>.<br>
+      • Công thức: <b>BMI = cân nặng (kg) / [chiều cao (m)]²</b>.<br>
+      <div class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-[10px] leading-relaxed">
+        Tip: Nếu đang gầy/béo, nên điều chỉnh ít nhất 4–12 tuần trước sơ tuyển (ăn ngủ, tập luyện, tăng/giảm cân an toàn).
+      </div>
+    `
+            },
+            {
+                title: "MẮT: THỊ LỰC & TẬT KHÚC XẠ (CẬN/VIỄN/LOẠN)",
+                content: `
+      <b>Thị lực không kính:</b><br>
+      • Mỗi mắt <b>09–10/10</b>, tổng 2 mắt <b>≥18/10</b>.<br><br>
+      <b>Nếu có tật khúc xạ:</b><br>
+      • <b>Cận/viễn:</b> mỗi mắt <b>≤ 03 đi-ốp</b><br>
+      • <b>Loạn:</b> loạn sinh lý hoặc <b>&lt; 01 đi-ốp/mắt</b><br>
+      • <b>Qua kính:</b> 1 mắt <b>≥09/10</b>, tổng 2 mắt <b>≥19/10</b><br>
+      <div class="mt-2 text-[10px] text-gray-600">
+        Khuyến nghị: đi khám mắt trước sơ tuyển để đo đi-ốp chuẩn, tránh “đo lệch” gây rơi loại.
+      </div>
+    `
+            },
+            {
+                title: "MÙ MÀU / RỐI LOẠN SẮC GIÁC (ĐIỂM HAY TRƯỢT)",
+                content: `
+      • Mù màu trục xanh lá–đỏ (dù nhẹ) thường làm giảm loại sức khỏe, <b>rủi ro rất cao không đạt</b> nếu tuyển chỉ nhận Loại 1–2.<br>
+      • Gợi ý: test sớm bằng bảng Ishihara tại cơ sở khám mắt để biết chắc.
+    `
+            },
+            {
+                title: "NGOẠI HÌNH: XĂM – BẤM LỖ – SẸO – DA – TÓC",
+                content: `
+      <b>Hình xăm:</b> không có vết trổ/vết xăm (kể cả phun xăm). Ngoại lệ thường gặp: nữ phun/xăm thẩm mỹ <b>lông mày, môi</b>.<br><br>
+      <b>Bấm lỗ:</b><br>
+      • Nam: không bấm tai/mũi/vị trí khác (lỗ đã liền sẹo có thể được xem xét).<br>
+      • Nữ: không có <b>từ 02 lỗ trở lên</b> trên 01 tai; không bấm mũi/vị trí khác.<br><br>
+      <b>Da – sẹo:</b> không rối loạn sắc tố (trừ nám má); không có sẹo lồi co kéo ở vùng hay lộ (đầu/mặt/cổ/cẳng tay/bàn tay/bàn chân).<br>
+      <b>Tóc:</b> màu & kiểu tóc bình thường theo điều lệnh.
+    `
+            },
+            {
+                title: "MA TÚY / TIỀN CHẤT (BẮT BUỘC ÂM TÍNH)",
+                content: `
+      • Yêu cầu: không nghiện và <b>không dương tính</b> chất ma túy/tiền chất ma túy.<br>
+      • Thường kiểm tra bằng xét nghiệm nước tiểu; trường hợp cần thiết có thể xét nghiệm bổ sung theo chỉ định.
+    `
+            },
+            {
+                title: "CẬN LÂM SÀNG (THƯỜNG LÀM KHI KHÁM TUYỂN)",
+                content: `
+      <b>Xét nghiệm máu:</b> công thức máu; glucose; AST/ALT; ure/creatinin; HIV; HBsAg; anti-HCV...<br>
+      <b>Nước tiểu:</b> tổng phân tích + test ma túy/tiền chất.<br>
+      <b>Chẩn đoán:</b> X-quang tim phổi; siêu âm ổ bụng; điện tim.<br>
+      <div class="mt-2 text-[10px] text-gray-600">
+        Lưu ý: có thể chỉ định thêm xét nghiệm/cận lâm sàng khác để kết luận.
+      </div>
+    `
+            },
+            {
+                title: "PHÚC TRA SAU TRÚNG TUYỂN & THỜI HẠN PHIẾU KHÁM",
+                content: `
+      • Có thể khám <b>phúc tra</b> sau trúng tuyển/nhập học để đối chiếu tiêu chuẩn.<br>
+      • Trường hợp ghi <b>“T”</b>: bệnh tạm thời (cấp tính) – cần điều trị khỏi để đánh giá lại.<br>
+      • Phiếu khám sức khỏe thường có giá trị <b>06 tháng</b> (nên khám gần thời điểm sơ tuyển).
+    `
+            },
+            {
+                title: "KHÁM SỨC KHỎE - THỜI GIAN CHUNG",
+                content: `
+            • <b>Đại học / Trung cấp:</b> từ <b>16/4 đến 05/5/2026</b>.<br>
+            • <b>VB2CA:</b> từ <b>29/6 đến 03/7/2026</b>.<br>
+            • Buổi sáng: <b>07h30</b>.<br>
+            • Buổi chiều: <b>13h30</b>.<br>
+            • Nếu vắng do lý do khách quan có thể khám vào lịch bù.
+        `
+            },
+            {
+                title: "ĐỊA ĐIỂM KHÁM SỨC KHỎE",
+                content: `
+            • <b>16/4 - 19/4/2026</b> và <b>29/6 - 30/6/2026</b>: Bệnh xá số 02 Công an tỉnh, số 31 Phan Chu Trinh, phường Đồng Hới.<br>
+            • <b>22/4 - 25/4/2026</b> và <b>01/7 - 02/7/2026</b>: Bệnh xá số 01 Công an tỉnh, đường Điện Biên Phủ, phường Nam Đông Hà.<br>
+            • <b>04/5 - 05/5/2026</b> và <b>03/7/2026</b>: khám bù tại Bệnh xá số 02 Công an tỉnh.
+        `
+            },
+            {
+                title: "KIỂM TRA THỂ LỰC - THỜI GIAN VÀ YÊU CẦU",
+                content: `
+            • Áp dụng với thí sinh đủ điều kiện dự tuyển đại học CAND, trừ trường hợp đang chờ tra cứu tiêu chuẩn chính trị.<br>
+            • Buổi sáng: <b>07h00</b>.<br>
+            • Buổi chiều: <b>15h00</b>.<br>
+            • Thí sinh có mặt trước <b>15 phút</b>, mặc trang phục thể thao, đi giày thể thao.
+        `
+            },
+            {
+                title: "NGƯỠNG ĐẠT KIỂM TRA THỂ LỰC",
+                content: `
+            • <b>Bật xa tại chỗ:</b> Nam <b>≥ 2,2m</b>; Nữ <b>≥ 1,5m</b>.<br>
+            • <b>Chạy 100m:</b> Nam <b>≤ 16 giây</b>; Nữ <b>≤ 20 giây</b>.<br>
+            • <b>Chạy 800m:</b> Nữ <b>≤ 5 phút 30 giây</b>.<br>
+            • <b>Chạy 1500m:</b> Nam <b>≤ 7 phút 30 giây</b>.<br>
+            • <b>Co tay xà đơn:</b> Nam <b>≥ 12 lần</b>.
+        `
+            },
+            {
+                title: "ĐỊA ĐIỂM KIỂM TRA THỂ LỰC",
+                content: `
+            • <b>20/4 - 21/4/2026:</b> Trung tâm Văn hóa và Điện ảnh tỉnh Quảng Trị, đường Trần Phú, phường Đồng Hới.<br>
+            • <b>28/4 - 29/4/2026:</b> Trụ sở phía Nam Công an tỉnh Quảng Trị, đường Điện Biên Phủ, phường Nam Đông Hà.
+        `
+            },
+            {
+                title: "LƯU Ý KHI ĐI KHÁM / PHÚC TRA",
+                content: `
+            • Thí sinh cần đi đúng lịch, mang theo giấy tờ cần thiết theo hướng dẫn của Công an địa phương hoặc đơn vị quản lý.<br>
+            • Trường hợp bệnh cấp tính, tình trạng tạm thời có thể được đánh giá lại theo quy định.<br>
+            • Sau trúng tuyển có thể khám phúc tra; nếu không đạt tiêu chuẩn sức khỏe sẽ xử lý theo quy định của Bộ Công an.
+        `
+            },
+            {
+                title: "PHỤ LỤC X – VÍ DỤ TRƯỜNG HỢP CÓ THỂ ĐƯỢC CHẤP NHẬN (THAM KHẢO)",
+                content: `
+      <details class="mt-1">
+        <summary class="font-bold text-[11px] text-[#ce181e] cursor-pointer">Bấm để xem ví dụ thường gặp</summary>
+        <div class="mt-2 text-[11px] leading-relaxed text-gray-700">
+          • 03–04 răng viêm tủy/hoại tử/viêm quanh cuống <b>đã điều trị ổn định</b>.<br>
+          • Lệch vách ngăn/dị dạng mũi <b>không rối loạn hô hấp & phát âm</b>.<br>
+          • Loét dạ dày–tá tràng <b>đã điều trị lành</b>.<br>
+          • Viêm ruột thừa đã mổ <b>&gt; 04 tuần</b>, kết quả tốt.<br>
+          • Thoát vị bẹn đã mổ tốt <b>&gt; 01 năm</b>.<br>
+          • Trĩ ngoại 01 búi <b>0,5–1 cm</b> (một số trường hợp) hoặc trĩ đã mổ tốt.<br>
+          • Một số nang/sỏi nhỏ ở gan–thận theo kích thước cho phép; viêm da tiếp xúc; viêm nang lông ở vùng không lộ…<br>
+          • Nang buồng trứng sinh lý; mổ lấy thai 1–2 lần không biến chứng (đối với nữ).<br>
+          <i>(Nội dung “chấp nhận” còn phụ thuộc kết luận thực tế và điều kiện áp dụng cụ thể.)</i>
+        </div>
+      </details>
+    `
+            }
+        ];
+
+        // DỮ LIỆU ĐIỀU KIỆN & NGUYÊN TẮC
+        const DIEU_KIEN_DATA = [
+            {
+                title: "TỔNG QUAN TUYỂN SINH VB2 TUYỂN MỚI 2026",
+                content: `
+            • Hệ tuyển sinh chính: <b>Đại học chính quy tuyển mới</b>, <b>Đại học văn bằng 2 tuyển mới (VB2CA)</b>, <b>Trung cấp chính quy tuyển mới</b>.<br>
+            • Phân vùng tuyển sinh:<br>
+            &nbsp;&nbsp;– <b>Phía Bắc:</b> từ thành phố Huế trở ra.<br>
+            &nbsp;&nbsp;– <b>Phía Nam:</b> từ thành phố Đà Nẵng trở vào.<br>
+            • Lược bỏ các nội dung nội bộ như tổ chức thực hiện, phân công, kinh phí chi tiết; chỉ giữ phần phục vụ hỏi đáp tự động.
+        `
+            },
+            {
+                title: "VB2CA - ĐỐI TƯỢNG, PHƯƠNG THỨC, CHỈ TIÊU",
+                content: `
+            • <b>Đối tượng:</b> Công dân Việt Nam.<br>
+            • <b>Phương thức:</b><br>
+            &nbsp;&nbsp;– PT1: Xét tuyển thẳng.<br>
+            &nbsp;&nbsp;– PT2: Thi tuyển. (Thi trắc nghiệm trên máy tính)<br>
+            • <b>Tổng chỉ tiêu:</b> <b>550</b>.
+        `
+            },
+            {
+                title: "VB2CA - ĐIỀU KIỆN, CHỨNG CHỈ, THỜI GIAN, LỆ PHÍ",
+                content: `
+            • Tốt nghiệp đại học hệ chính quy, bằng do cơ sở giáo dục đại học trong nước hoặc nước ngoài cấp; xếp loại từ <b>khá</b> trở lên.<br>
+            • Sinh viên năm cuối được đăng ký, nhưng đến ngày xét tuyển của các trường CAND (<b>20/8/2026</b>) phải có bằng hoặc giấy xác nhận tốt nghiệp; đến thời điểm nhập học phải có bằng tốt nghiệp.<br>
+            • Văn bằng nước ngoài phải được cơ quan có thẩm quyền của Bộ GD&ĐT công nhận.<br>
+            • Một số trường/ngành cho phép tốt nghiệp khối kỹ thuật, khoa học tự nhiên, khoa học máy tính, CNTT với điều kiện kết quả chuyên môn đạt mức khá trở lên.<br>
+            • Chiến sĩ nghĩa vụ Công an tại ngũ phải có thời gian công tác từ <b>15 tháng trở lên</b> tính đến tháng thi tuyển; bằng tốt nghiệp đại học chính quy từ loại trung bình trở lên.<br>
+            • Độ tuổi không quá <b>30</b> tính đến ngày dự thi.<br>
+            • Tiêu chuẩn chính trị và sức khỏe áp dụng tương tự tuyển sinh học sinh phổ thông vào các trường CAND.<br><br>
+            • <b>Điều kiện nổi bật của PT1:</b><br>
+            &nbsp;&nbsp;– Có thể xét tuyển thẳng với thí sinh loại giỏi/xuất sắc theo nhóm ngành phù hợp và điều kiện chứng chỉ ngoại ngữ tương ứng.<br>
+            &nbsp;&nbsp;– Chứng chỉ ngoại ngữ còn hạn không quá <b>02 năm</b> tính đến <b>01/8/2026</b>.<br><br>
+            • <b>Bài thi:</b> thi trên máy tính, thời lượng <b>150 phút</b>, ngày thi <b>20/9/2026</b>.<br><br>
+            • <b>Mốc thời gian:</b><br>
+            &nbsp;&nbsp;– 15/3 - 25/6/2026: Đăng ký dự tuyển.<br>
+            &nbsp;&nbsp;– 29/6 - 03/7/2026: Khám sức khỏe VB2CA.<br>
+            &nbsp;&nbsp;– 20/8/2026: Nộp hồ sơ và danh sách đăng ký dự tuyển.<br>
+            &nbsp;&nbsp;– 19 - 20/9/2026: Tổ chức kỳ thi VB2CA của Bộ Công an.<br>
+            &nbsp;&nbsp;– 01 - 03/10/2026: Thông báo điểm thi và tiếp nhận phúc khảo.<br>
+            &nbsp;&nbsp;– 15 - 20/10/2026: Phê duyệt danh sách trúng tuyển.<br>
+            &nbsp;&nbsp;– 30/10/2026: Thông báo kết quả trúng tuyển.<br>
+            &nbsp;&nbsp;– 10 - 15/11/2026: Nhập học.<br><br>
+            • <b>Lệ phí sơ tuyển:</b> <b>100.000 đồng/thí sinh</b>.<br>
+            • <b>Lệ phí hồ sơ:</b> <b>30.000 đồng/bộ</b>.
+        `
+            },
+            {
+                title: "TRƯỜNG TUYỂN SINH VÀ PHÂN VÙNG",
+                content: `
+            &nbsp;&nbsp;– Toàn quốc: T06; T07; ngành An toàn thông tin của T01.<br>
+            &nbsp;&nbsp;– Phía Bắc: nhóm ngành nghiệp vụ An ninh của T01; nhóm ngành nghiệp vụ Cảnh sát của T02.<br>
+            &nbsp;&nbsp;– Phía Nam: nhóm ngành nghiệp vụ An ninh của T04; nhóm ngành nghiệp vụ Cảnh sát của T05.<br><br>
+        `
+            },
+            {
+                title: "MÃ TỔ HỢP XÉT TUYỂN VÀ MÃ BÀI THI",
+                content: `
+            • <b>Mã tổ hợp:</b><br>
+            &nbsp;&nbsp;– A00: Toán, Vật lí, Hóa học.<br>
+            &nbsp;&nbsp;– A01: Toán, Vật lí, Tiếng Anh.<br>
+            &nbsp;&nbsp;– B00: Toán, Hóa học, Sinh học.<br>
+            &nbsp;&nbsp;– B08: Toán, Sinh học, Tiếng Anh.<br>
+            &nbsp;&nbsp;– C00: Ngữ văn, Lịch sử, Địa lí.<br>
+            &nbsp;&nbsp;– C03: Toán, Ngữ văn, Lịch sử.<br>
+            &nbsp;&nbsp;– D01: Toán, Ngữ văn, Tiếng Anh.<br>
+            &nbsp;&nbsp;– D04: Toán, Ngữ văn, Tiếng Trung Quốc.<br>
+            &nbsp;&nbsp;– D07: Toán, Hóa học, Tiếng Anh.<br>
+            &nbsp;&nbsp;– D09: Toán, Lịch sử, Tiếng Anh.<br>
+            &nbsp;&nbsp;– D10: Toán, Địa lí, Tiếng Anh.<br>
+            &nbsp;&nbsp;– X02: Toán, Ngữ văn, Tin học.<br>
+            &nbsp;&nbsp;– X03: Toán, Ngữ văn, Công nghệ công nghiệp.<br>
+            &nbsp;&nbsp;– X04: Toán, Ngữ văn, Công nghệ nông nghiệp.<br>
+            &nbsp;&nbsp;– X26: Toán, Tiếng Anh, Tin học.<br>
+            &nbsp;&nbsp;– X27: Toán, Tiếng Anh, Công nghệ công nghiệp.<br>
+            &nbsp;&nbsp;– X28: Toán, Tiếng Anh, Công nghệ nông nghiệp.<br><br>
+            • <b>Mã bài thi đánh giá Bộ Công an:</b><br>
+            &nbsp;&nbsp;– CA1: Ngữ văn tự luận; trắc nghiệm Toán, Lịch sử, Tiếng Anh; tự chọn Vật lí.<br>
+            &nbsp;&nbsp;– CA2: Ngữ văn tự luận; trắc nghiệm Toán, Lịch sử, Tiếng Anh; tự chọn Hóa học.<br>
+            &nbsp;&nbsp;– CA3: Ngữ văn tự luận; trắc nghiệm Toán, Lịch sử, Tiếng Anh; tự chọn Sinh học.<br>
+            &nbsp;&nbsp;– CA4: Ngữ văn tự luận; trắc nghiệm Toán, Lịch sử, Tiếng Anh; tự chọn Địa lí.
+        `
+            }
+        ];
+        function renderModalData() {
+            document.getElementById('list-suckhoe').innerHTML = SUC_KHOE_DATA.map(i => `<div class="p-3 bg-white border border-red-100 rounded-lg shadow-sm"><p class="text-xs font-bold text-[#ce181e] uppercase">⚕️ ${i.title}</p><p class="text-[11px] text-gray-700 mt-1 leading-relaxed">${i.content}</p></div>`).join('');
+            document.getElementById('list-dieukien').innerHTML = DIEU_KIEN_DATA.map(i => `<div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><p class="text-xs font-bold text-gray-800 uppercase text-[#ce181e]">📌 ${i.title}</p><p class="text-[11px] text-gray-600 mt-1 leading-relaxed">${i.content}</p></div>`).join('');
+            filterContact();
+        }
+
+        function filterContact() {
+            const term = document.getElementById('searchContact').value.toLowerCase();
+            const filtered = DANH_BA_DATA.filter(i =>
+                i.unit.toLowerCase().includes(term) ||
+                i.name.toLowerCase().includes(term)
+            );
+
+            document.getElementById('list-danhba').innerHTML = filtered.map(i => `
+                <div class="p-3 bg-white border border-gray-200 rounded-lg flex justify-between items-center hover:border-red-300 transition-all shadow-sm">
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-800">${i.unit}</p>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mt-0.5"><i class="fas fa-user-shield mr-1"></i>${i.name}</p>
+                    </div>
+                    <a href="tel:${i.phone.replace(/\./g, '')}" class="text-[11px] font-black text-[#ce181e] bg-red-50 px-2 py-1 rounded border border-red-100 hover:bg-red-600 hover:text-white transition-colors">
+                        ${i.phone}
+                    </a>
+                </div>
+            `).join('');
+        }
+
+
+        function toggleModal(id) {
+            const m = document.getElementById(id);
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function switchTab(btn, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            btn.classList.add('active');
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+        window.onload = renderModalData;
+    </script>
     <script>
         marked.setOptions({
             highlight: function (code, lang) {
@@ -398,7 +912,7 @@
         input.addEventListener("keypress", (e) => { if (e.key === "Enter") send(); });
 
         window.addEventListener("load", () => {
-            appendMessage("agent", "Chào bạn! Mình có thể giúp gì cho bạn về tuyển sinh Văn bằng 2 tuyển mới năm 2026?", true);
+            appendMessage("agent", "Chào bạn! Mình có thể giúp gì cho bạn về tuyển sinh năm 2026?", true);
         });
     </script>
 </body>
