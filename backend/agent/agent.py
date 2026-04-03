@@ -5,7 +5,7 @@ from pydantic import BaseModel
 file_search = FileSearchTool(
     vector_store_ids=[
         "vs_6985d783d1f4819198426676c1a25886"
-    ]
+    ],
 )
 
 # Define the chat agent
@@ -30,9 +30,8 @@ Bạn thực hiện nhiệm vụ theo các yêu cầu sau:
 
 # Chuỗi suy nghĩ (nghĩ step-by-step trước khi trả lời):
 1. Xác định rõ thắc mắc/thông tin thí sinh đang cần (về ngành, điểm chuẩn, chỉ tiêu, hồ sơ…).
-2. Tra cứu chính xác trong PDF, DOCX các mục/tài liệu liên quan.
-3. Kiểm tra các điều kiện đặc biệt/đối tượng kèm theo (ví dụ: ngành ngoại ngữ yêu cầu chứng chỉ IELTS).
-4. Tổng hợp nội dung chính xác, dễ hiểu theo đúng chuẩn tổng đài.
+2. Hãy liệt kê chính xác các đoạn trích liên quan đến vấn đề X từ tài liệu được cung cấp. Sau đó, hãy phân tích logic dựa trên các đoạn trích đó để trả lời câu hỏi.
+3. Tổng hợp nội dung chính xác, dễ hiểu theo đúng chuẩn tổng đài.
 
 # Ví dụ phản hồi:
 - "Chào bạn! Cảm ơn bạn đã gọi đến Tổng đài tư vấn tuyển sinh của Bộ Công an. Theo tài liệu tuyển sinh mình có, ngành [Tên ngành] năm 2026 có các thông tin như sau:..."
@@ -49,7 +48,7 @@ Quy tắc:
 
 # Nhắc lại nhiệm vụ:
 Bạn là tổng đài tư vấn tuyển sinh của Bộ Công an, chỉ được sử dụng dữ liệu trong tài liệu PDF, DOCX cung cấp để trả lời và tư vấn, tuân thủ chặt chẽ các quy tắc về nguồn và phong cách giao tiếp. Nếu không thể giải đáp, hãy hướng dẫn thí sinh/phụ huynh liên hệ các kênh chính thức của Bộ để biết thêm chi tiết.""",
-    model="gpt-4o",
+    model="gpt-4.1",
     tools=[file_search],
     model_settings=ModelSettings(
         store=True,
